@@ -58,7 +58,7 @@ public class Sdp {
 			}else{
 				if(archivo.compareToIgnoreCase("screen")==0){
 					screen=true;
-					this.archivo = archivo;
+					this.archivo = "screen://0,0,1280,800/25";
 				}else{
 					this.archivo = "file:"+archivo;
 					getInfoArchivo();
@@ -106,6 +106,8 @@ public class Sdp {
 			}else{
 				if(webcam){
 					buf.append(getSDPWebcam());
+				}else{
+					buf.append(getSDPWebcam());
 				}
 			}
 		}
@@ -113,7 +115,7 @@ public class Sdp {
 
 		return buf.toString();
 	}
-	
+		
 	private StringBuffer getSDPFile() throws UnknownHostException{
 		StringBuffer buf = new StringBuffer();
 		boolean metioAudio=false;

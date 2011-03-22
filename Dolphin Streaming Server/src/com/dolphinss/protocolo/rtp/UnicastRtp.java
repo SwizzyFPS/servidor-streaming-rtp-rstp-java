@@ -318,6 +318,9 @@ public class UnicastRtp implements ControllerListener,
 
 	protected boolean startMyStream() {
 		try {
+			if(HiloCliente.DEBUG){
+				System.out.println("\tInicio transmision del stream...");
+			}
 			mySendStream.start();
 			processor.start();
 		} catch (IOException ex) {
