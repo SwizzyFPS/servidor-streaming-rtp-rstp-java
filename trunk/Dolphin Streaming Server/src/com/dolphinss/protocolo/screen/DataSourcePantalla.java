@@ -6,6 +6,7 @@ import javax.media.Time;
 import javax.media.protocol.PushBufferDataSource;
 import javax.media.protocol.PushBufferStream;
 
+
 public class DataSourcePantalla extends PushBufferDataSource {
 	protected Object[] controls = new Object[0];
 	protected boolean started = false;
@@ -71,6 +72,7 @@ public class DataSourcePantalla extends PushBufferDataSource {
 		return duration;
 	}
 
+	@Override
 	public PushBufferStream[] getStreams() {
 		if (streams == null) {
 			streams = new StreamPantalla[1];
