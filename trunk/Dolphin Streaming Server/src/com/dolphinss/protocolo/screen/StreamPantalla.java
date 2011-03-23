@@ -90,7 +90,7 @@ public class StreamPantalla implements PushBufferStream, Runnable {
 			throw new RuntimeException("");
 		}
 		maxDataLength = size.width * size.height * 3;
-		System.out.println("new RGBFormat("+size+", "+maxDataLength+", "+Format.intArray+","
+		System.out.println("StreamPantalla::StreamPantalla -> new RGBFormat("+size+", "+maxDataLength+", "+Format.intArray+","
 				+frameRate+", 32, 0xFF0000, 0xFF00, 0xFF, 1, "+size.width+","+
 				VideoFormat.FALSE+", Format.NOT_SPECIFIED)");
 		rgbFormat = new RGBFormat(size, maxDataLength, Format.intArray,

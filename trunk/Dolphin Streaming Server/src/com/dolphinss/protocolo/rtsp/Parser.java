@@ -21,10 +21,10 @@ public class Parser {
 	private String archivo = "";
 
 	public static boolean esFile(String medio){
-		if(medio.compareToIgnoreCase("javasound://0")==0){
+		if(medio.compareToIgnoreCase("sonido")==0){
 			return false;
 		}else{
-			if(medio.compareToIgnoreCase("vfw://0")==0){
+			if(medio.compareToIgnoreCase("webcam")==0){
 				return false;
 			}else{
 				if(medio.compareToIgnoreCase("screen")==0){
