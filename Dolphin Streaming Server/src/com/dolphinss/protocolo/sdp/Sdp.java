@@ -48,13 +48,13 @@ public class Sdp {
 	 * @param archivo El nombre del archivo o recurso solicitado por el cliente.
 	 */
 	public Sdp(String archivo) {
-		if(archivo.compareToIgnoreCase("javasound://0")==0){
+		if(archivo.compareToIgnoreCase("sonido")==0){
 			javasound=true;
-			this.archivo = archivo;
+			this.archivo = "javasound://0";
 		}else{
-			if(archivo.compareToIgnoreCase("vfw://0")==0){
+			if(archivo.compareToIgnoreCase("webcam")==0){
 				webcam=true;
-				this.archivo = archivo;
+				this.archivo = "vfw://0";
 			}else{
 				if(archivo.compareToIgnoreCase("screen")==0){
 					screen=true;
