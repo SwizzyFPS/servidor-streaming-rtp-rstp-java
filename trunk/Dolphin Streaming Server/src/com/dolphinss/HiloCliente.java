@@ -7,6 +7,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 
 import com.dolphinss.protocolo.rtp.UnicastRtp;
+import com.dolphinss.protocolo.rtp.UnicastRtpPantalla;
 import com.dolphinss.protocolo.rtp.UnicastRtpWebcam;
 import com.dolphinss.protocolo.rtsp.Describe;
 import com.dolphinss.protocolo.rtsp.ErrorRTSP;
@@ -336,7 +337,11 @@ public class HiloCliente extends Thread implements Runnable {
 			if(esArchivo){
 				u=new UnicastRtp(archivoEnvio, ip_destino, puertoLocalEnviar, puertosCliente[indicePuertos], i);
 			}else{
-				u=new UnicastRtpWebcam(archivoEnvio, ip_destino, puertoLocalEnviar, puertosCliente[indicePuertos], i);
+				if(archivoSolicitado.compareToIgnoreCase("vfw://0")==0){
+					u=new UnicastRtpWebcam(archivoEnvio, ip_destino, puertoLocalEnviar, puertosCliente[indicePuertos], i);
+				}else{
+					u=new UnicastRtpPantalla(archivoEnvio, ip_destino, puertoLocalEnviar, puertosCliente[indicePuertos], i);
+				}
 			}
 			u.run();
 			puertoLocalEnviar+=Servidor.unidadAumentarPuertos;

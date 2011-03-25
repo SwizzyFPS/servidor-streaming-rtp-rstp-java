@@ -235,13 +235,18 @@ public class UnicastRtp implements ControllerListener,
 			((FormatControl) track).setFormat(new VideoFormat(
 					VideoFormat.JPEG_RTP));
 			found = true;
+		}
+		if (v.isSameEncoding(VideoFormat.RGB)) {// para el escritorio
+			((FormatControl) track).setFormat(new VideoFormat(
+					VideoFormat.JPEG_RTP));
+			found = true;
 		}	
 		
 		if(HiloCliente.DEBUG){
 			String s="";
 			if(found){
 				s="Formato de video encontrado ("+v.toString()+"). " +
-						"Se transforma a ("+((FormatControl) track).getFormat().toString()+").";
+						"\nSe transforma a ("+((FormatControl) track).getFormat().toString()+").";
 			}else{
 				s="Formato de video ("+v.toString()+") NO encontrado.";
 			}

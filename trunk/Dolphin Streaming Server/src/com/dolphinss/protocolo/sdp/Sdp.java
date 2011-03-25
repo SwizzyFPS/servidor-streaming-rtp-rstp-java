@@ -107,7 +107,7 @@ public class Sdp {
 				if(webcam){
 					buf.append(getSDPWebcam());
 				}else{
-					buf.append(getSDPWebcam());
+					buf.append(getSDPantalla());
 				}
 			}
 		}
@@ -180,15 +180,28 @@ public class Sdp {
 		return buf;
 	}
 	
-	private StringBuffer getSDPWebcam(){
+	private StringBuffer getSDPantalla(){
 		StringBuffer buf = new StringBuffer();
 		String rango = "a=range:npt=0-100";
-		buf.append("m=video "+puertoClienteVideo+" RTP/AVP 32"+RespuestaRTSP.CRLF);
-		buf.append("a=rtpmap:32 MPV/90000"+RespuestaRTSP.CRLF);
+		buf.append("m=video "+puertoClienteVideo+" RTP/AVP 26"+RespuestaRTSP.CRLF);
+		buf.append("a=rtpmap:26 JPEG/90000"+RespuestaRTSP.CRLF);
 		buf.append("a=control:rtsp://");
 		buf.append(ip);
 		buf.append("/video"+RespuestaRTSP.CRLF);
-		buf.append("a=mimetype: video/MPV"+RespuestaRTSP.CRLF);
+		buf.append("a=mimetype: video/JPEG"+RespuestaRTSP.CRLF);
+		buf.append(rango);
+		return buf;
+	}
+	
+	private StringBuffer getSDPWebcam(){
+		StringBuffer buf = new StringBuffer();
+		String rango = "a=range:npt=0-100";
+		buf.append("m=video "+puertoClienteVideo+" RTP/AVP 26"+RespuestaRTSP.CRLF);
+		buf.append("a=rtpmap:26 JPEG/90000"+RespuestaRTSP.CRLF);
+		buf.append("a=control:rtsp://");
+		buf.append(ip);
+		buf.append("/video"+RespuestaRTSP.CRLF);
+		buf.append("a=mimetype: video/JPEG"+RespuestaRTSP.CRLF);
 		buf.append(rango);
 		return buf;
 	}
