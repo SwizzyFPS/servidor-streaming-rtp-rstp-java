@@ -17,7 +17,9 @@ import javax.media.NotRealizedError;
 import javax.media.Processor;
 import javax.media.ProcessorModel;
 import javax.media.RealizeCompleteEvent;
+import javax.media.control.FormatControl;
 import javax.media.control.TrackControl;
+import javax.media.format.AudioFormat;
 import javax.media.format.VideoFormat;
 import javax.media.protocol.ContentDescriptor;
 import javax.media.protocol.DataSource;
@@ -53,7 +55,7 @@ SendStreamListener {
 			ds.setLocator(ml);
 			clone = javax.media.Manager.createCloneableDataSource(ds);
 		} catch (Exception e) {
-			System.out.println("Excepcion al crear el DataSourcePantalla; "+e.getMessage());
+			System.out.println(e.getMessage());
 		}
 
 		try {
@@ -63,34 +65,34 @@ SendStreamListener {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
 		Format[] outputFormat=new Format[1];
-		VideoFormat vv=new VideoFormat(VideoFormat.JPEG_RTP);
-		outputFormat[0]=vv;
-		FileTypeDescriptor outputType = new FileTypeDescriptor(
-				FileTypeDescriptor.RAW_RTP);
-		ProcessorModel processorModel = new ProcessorModel(clone,
-				outputFormat, outputType);
-		
+		FileTypeDescriptor outputType = new FileTypeDescriptor(FileTypeDescriptor.RAW_RTP);
+		outputFormat[0]=new VideoFormat(VideoFormat.JPEG_RTP);
+		ProcessorModel processorModel = new ProcessorModel(clone, outputFormat, outputType);
+
 		// Try to create a processor to handle the input media locator
 		try {
-			processor = Manager.createProcessor(ds);
-			processor.addControllerListener(this);
-			processor.configure();
+			processor = Manager.createRealizedProcessor(processorModel);
+//			processor=Manager.createProcessor(ds);
+//			processor.addControllerListener(this);
+//			processor.configure();
 //			processor.prefetch();
 		} catch (NoProcessorException npe) {
-			System.out.println("Salta excepcion: NoProcessorException; Con mensaje: "+npe.getMessage());
+			System.out.println(npe.getMessage());
 		} catch (IOException ioe) {
-			System.out.println("Salta excepcion: IOException; con mensaje: "+ioe.getMessage());
+			System.out.println(ioe.getMessage());
 		} 
-//		catch (CannotRealizeException e) {
-//			// TODO Auto-generated catch block
-//			System.out.println("Salta excepcion: CannotRealizeException; con mensaje: "+e.getMessage());
-//		} 
+		catch (CannotRealizeException e) {
+			// TODO Auto-generated catch block
+			System.out.println(e.getMessage());
+		}		
 		
-		while(processor.getState()<Processor.Configured){
-			System.out.println("Esperando a configurar el processor...");
-		}
+//		while(processor.getState()<Processor.Configured){
+//			System.out.println("Esperando a configurar el processor...");
+//		}
+		
+		ds = processor.getDataOutput();
+		createMyRTPManager();
 				
 		return true;
 	}
@@ -101,24 +103,67 @@ SendStreamListener {
 		if(evento instanceof ConfigureCompleteEvent){
 			System.out.println("Entro por evento ConfigureCompleteEvent");
 			
+			//esto es para usar el procesor como un Player, para visualizarlo en un componente.
+			//si lo transmito por RTP, seguramente no ponga esto, sino un descriptr válido.
 			ContentDescriptor cd = new ContentDescriptor(ContentDescriptor.RAW_RTP);
 			processor.setContentDescriptor(cd);
 			
-			configuraPistas();
+			TrackControl[] tracks = processor.getTrackControls();
+			
+			// Search through the tracks for a video track
+			for (int i = 0; i < tracks.length; i++) {
+				Format format = tracks[i].getFormat();
+				if (tracks[i].isEnabled() && format instanceof VideoFormat) {
+
+					VideoFormat v = (VideoFormat) tracks[i].getFormat();			
+
+					System.out.println("Formato inicial video pantalla: "+v);
+					
+					// Found a video track. Try to program it to output JPEG/RTP
+					// Make sure the sizes are multiple of 8's.
+					Dimension size = new Dimension(width, height);//((VideoFormat) format).getSize();
+					int w = (size.width % 8 == 0 ? size.width
+							: (int) (size.width / 8) * 8);
+					int h = (size.height % 8 == 0 ? size.height
+							: (int) (size.height / 8) * 8);
+					VideoFormat jpegFormat = new VideoFormat(VideoFormat.JPEG_RTP,
+							new Dimension(w, h), Format.NOT_SPECIFIED,
+							Format.byteArray, frameRate);
+					tracks[i].setFormat(jpegFormat);
+					
+					System.out.println("Formato final video pantalla: "+(VideoFormat) tracks[i].getFormat());
+				} else
+					tracks[i].setEnabled(false);
+			}
+			
+//			Format format;
+//			TrackControl track[] = processor.getTrackControls();
+//			int numPistas=track.length;
+//			for(int i=0;i<numPistas;i++){
+//				format = track[i].getFormat();
+//
+//				if (format instanceof VideoFormat) {
+//					VideoFormat v = (VideoFormat) track[i].getFormat();
+//					setMyVideoFormat(v, track[i]);
+//				}
+//				if (format instanceof AudioFormat) {
+//					AudioFormat a = (AudioFormat) track[i].getFormat();
+//					setMyAudioFormat(a, track[i]);
+//				}
+//			}
 			
 			processor.realize();
 		}
-		if (evento instanceof RealizeCompleteEvent) {
+		if(evento instanceof RealizeCompleteEvent){
 			System.out.println("Entro por evento RealizeCompleteEvent");
 			try {
 				ds = processor.getDataOutput();
 				createMyRTPManager();
 			} catch (NotRealizedError ex) {
 				System.out.println("Salta excepcion: NotRealizedError; con mensaje: "+ex.getMessage());
-			}
+			}		
 		}
-
-		if (evento instanceof EndOfMediaEvent) {
+		if(evento instanceof EndOfMediaEvent){
 			System.out.println("Entro por evento EndOfMediaEvent");
 			closeMyStream();
 			endofMedia = true;
