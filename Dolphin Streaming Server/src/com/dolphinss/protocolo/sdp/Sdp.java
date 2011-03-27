@@ -90,7 +90,7 @@ public class Sdp {
 	public String getSdp() throws UnknownHostException {
 		StringBuffer buf = new StringBuffer();
 
-		ip = InetAddress.getLocalHost().getHostAddress();
+		ip = Servidor.IP_SERVIDOR;
 		
 		buf.append("v=0"+RespuestaRTSP.CRLF);
 		buf.append("o="+Servidor.nombre+RespuestaRTSP.CRLF);
