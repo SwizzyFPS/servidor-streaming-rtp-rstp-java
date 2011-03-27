@@ -1,19 +1,16 @@
 package com.dolphinss.protocolo.screen;
 
+
+
 import java.awt.AWTException;
 import java.awt.Dimension;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.MouseInfo;
 import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.StringTokenizer;
 
-import javax.imageio.ImageIO;
 import javax.media.Buffer;
 import javax.media.Control;
 import javax.media.Format;
@@ -34,7 +31,7 @@ public class StreamPantalla implements PushBufferStream, Runnable {
 	protected RGBFormat rgbFormat;
 	protected boolean started;
 	protected Thread thread;
-	protected float frameRate = 30f;
+	protected float frameRate = 1f;
 	protected BufferTransferHandler transferHandler;
 	protected Control[] controls = new Control[0];
 	protected int x, y, width, height;
@@ -47,8 +44,6 @@ public class StreamPantalla implements PushBufferStream, Runnable {
 	long OldStampCons = 0;
 	public boolean pauseScreen = false;
 	int pauseCounter = 0;
-	
-	protected boolean conRaton=true;
 
 	public void setDimension(int w, int h) {
 		width = w;
@@ -90,20 +85,15 @@ public class StreamPantalla implements PushBufferStream, Runnable {
 			throw new RuntimeException("");
 		}
 		maxDataLength = size.width * size.height * 3;
-		System.out.println("StreamPantalla::StreamPantalla -> new RGBFormat("+size+", "+maxDataLength+", "+Format.intArray+","
-				+frameRate+", 32, 0xFF0000, 0xFF00, 0xFF, 1, "+size.width+","+
-				VideoFormat.FALSE+", Format.NOT_SPECIFIED)");
 		rgbFormat = new RGBFormat(size, maxDataLength, Format.intArray,
 				frameRate, 32, 0xFF0000, 0xFF00, 0xFF, 1, size.width,
 				VideoFormat.FALSE, Format.NOT_SPECIFIED);
 
-		//iniciamos una ventana para conctrolar los frames/segundo de captura.
-		//Esta ventana es totalmente prescindible en esta clase.
 //		VistaFPS frame1 = new VistaFPS("Capture Frame");
 //		frame1.pack();
 //		frame1.setSizeMarcoCaptura(new Dimension(width, height));
 //		frame1.setVisible(true);
-//		frame1.FrameTransmit(LiveStream.this);
+//		frame1.FrameTransmit(StreamPantalla.this);
 
 		// generate the data
 		data = new int[maxDataLength];
@@ -162,7 +152,6 @@ public class StreamPantalla implements PushBufferStream, Runnable {
 		return rgbFormat;
 	}
 
-	@Override
 	public void read(Buffer buffer) throws IOException {
 		synchronized (this) {
 			// {
@@ -199,28 +188,16 @@ public class StreamPantalla implements PushBufferStream, Runnable {
 			// buffer.setTimeStamp( (long) (seqNo * (1000 / frameRate) *
 			// 1000000) );
 			buffer.setTimeStamp(timeStamp);
-//			System.out.println("timeStamp is: " + timeStamp);
-//			System.out.println("framerate is: " + frameRate);
+			// System.out.println("timeStamp is: " + timeStamp);
+			// System.out.println("framerate is: " + frameRate);
 			int ww = width;
 			// ww = ww+1;
 			// x = x+1;
 			// y = y+1;
 			// height = height+1;
 			// System.out.println("width is: "+width);
-			
 			BufferedImage bi = robot.createScreenCapture(new Rectangle(x, y,
 					width, height));
-			
-			//AÑADIDO EL 22-02-2011 PARA MOSTRAR EL RATÓN
-			if(conRaton){
-				Image cursor = ImageIO.read(new File("cursor.png"));
-				int x = MouseInfo.getPointerInfo().getLocation().x;
-				int y = MouseInfo.getPointerInfo().getLocation().y;
-				Graphics2D graphics2D = bi.createGraphics();
-				graphics2D.drawImage(cursor, x, y, 16, 24, null); // cursor.png is 32x32 size.
-			}
-			//FIN AÑADIDO EL 22-02-2011 PARA MOSTRAR EL RATÓN
-			
 			// bi.getRGB(0, 0, width, height,
 			// (int[])outdata, 0, width);
 			bi.getRGB(0, 0, width, height, (int[]) outdata, 0, width);

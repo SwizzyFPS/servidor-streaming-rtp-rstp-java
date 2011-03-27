@@ -237,10 +237,15 @@ public class HiloCliente extends Thread implements Runnable {
 				break;
 
 			default:
-				System.out.println("Atencion, no se entiende la orden: ->"
-						+ lineasPeticion + "<-. Se manda un OK");
-				respRTP=new ErrorRTSP(cseq);
-				System.exit(0);
+				if(lineasPeticion.isEmpty()){
+					System.out.println("Nos envia una orden vacia. Enviamos OK");
+					respRTP=new ErrorRTSP(cseq);
+				}else{
+					System.out.println("Atencion, no se entiende la orden: ->"
+							+ lineasPeticion + "<-. Se manda un OK");
+					respRTP=new ErrorRTSP(cseq);
+					System.exit(0);
+				}
 				break;
 			}
 		} catch (Exception e) {

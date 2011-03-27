@@ -68,8 +68,8 @@ public class Servidor {
 	 */
 	public Servidor(){
 		try {
+			IP_SERVIDOR="93.156.241.39";
 			IP_SERVIDOR=InetAddress.getLocalHost().getHostAddress();
-//			IP_SERVIDOR="93.156.241.39";
 		} 
 		catch (UnknownHostException e) {
 			// TODO Auto-generated catch block

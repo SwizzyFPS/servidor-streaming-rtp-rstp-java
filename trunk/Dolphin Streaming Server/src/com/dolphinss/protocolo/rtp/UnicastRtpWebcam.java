@@ -1,23 +1,17 @@
 package com.dolphinss.protocolo.rtp;
 
-import java.io.IOException;
 import java.net.InetAddress;
 
 import javax.media.ConfigureCompleteEvent;
 import javax.media.ControllerEvent;
 import javax.media.EndOfMediaEvent;
 import javax.media.Format;
-import javax.media.Manager;
-import javax.media.MediaLocator;
-import javax.media.NoProcessorException;
 import javax.media.NotRealizedError;
 import javax.media.RealizeCompleteEvent;
 import javax.media.control.TrackControl;
 import javax.media.format.AudioFormat;
 import javax.media.format.VideoFormat;
 import javax.media.protocol.ContentDescriptor;
-
-import com.dolphinss.HiloCliente;
 
 public class UnicastRtpWebcam extends UnicastRtp {
 
