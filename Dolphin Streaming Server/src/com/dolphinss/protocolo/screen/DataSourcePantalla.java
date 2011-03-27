@@ -6,8 +6,15 @@ import javax.media.Time;
 import javax.media.protocol.PushBufferDataSource;
 import javax.media.protocol.PushBufferStream;
 
+/**
+ * This DataSource captures live frames from the screen. You can specify the
+ * location, size and frame rate in the URL string as follows:
+ * screen://x,y,width,height/framespersecond Eg: screen://20,40,160,120/12.5
+ * Note: Requires JDK 1.3+ to compile and run
+ */
 
 public class DataSourcePantalla extends PushBufferDataSource {
+
 	protected Object[] controls = new Object[0];
 	protected boolean started = false;
 	protected String contentType = "raw";
@@ -72,7 +79,6 @@ public class DataSourcePantalla extends PushBufferDataSource {
 		return duration;
 	}
 
-	@Override
 	public PushBufferStream[] getStreams() {
 		if (streams == null) {
 			streams = new StreamPantalla[1];

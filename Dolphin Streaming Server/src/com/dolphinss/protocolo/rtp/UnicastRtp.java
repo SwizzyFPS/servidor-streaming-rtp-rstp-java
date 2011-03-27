@@ -1,37 +1,38 @@
 package com.dolphinss.protocolo.rtp;
 
-import javax.media.ControllerClosedEvent;
-import javax.media.NotRealizedError;
-import javax.media.MediaLocator;
-import javax.media.RealizeCompleteEvent;
-import javax.media.ControllerListener;
-import javax.media.ControllerEvent;
-import javax.media.Format;
-import javax.media.NoProcessorException;
-import javax.media.Processor;
-import javax.media.Manager;
-import javax.media.ConfigureCompleteEvent;
-import javax.media.EndOfMediaEvent;
-import javax.media.protocol.PushBufferDataSource;
-import javax.media.protocol.PushBufferStream;
-import javax.media.protocol.ContentDescriptor;
-import javax.media.protocol.DataSource;
-
-import javax.media.control.FormatControl;
-import javax.media.control.TrackControl;
-
-import javax.media.format.AudioFormat;
-import javax.media.format.VideoFormat;
-import javax.media.rtp.RTPManager;
-import javax.media.rtp.SessionAddress;
-import javax.media.rtp.SendStreamListener;
-import javax.media.rtp.SendStream;
-
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
+
+import javax.media.ConfigureCompleteEvent;
+import javax.media.ControllerClosedEvent;
+import javax.media.ControllerEvent;
+import javax.media.ControllerListener;
+import javax.media.EndOfMediaEvent;
+import javax.media.Format;
+import javax.media.Manager;
+import javax.media.MediaLocator;
+import javax.media.NoProcessorException;
+import javax.media.NotRealizedError;
+import javax.media.Processor;
+import javax.media.RealizeCompleteEvent;
+import javax.media.control.FormatControl;
+import javax.media.control.TrackControl;
+import javax.media.format.AudioFormat;
+import javax.media.format.UnsupportedFormatException;
+import javax.media.format.VideoFormat;
+import javax.media.protocol.ContentDescriptor;
+import javax.media.protocol.DataSource;
+import javax.media.protocol.PushBufferDataSource;
+import javax.media.protocol.PushBufferStream;
+import javax.media.rtp.InvalidSessionAddressException;
+import javax.media.rtp.RTPManager;
+import javax.media.rtp.SendStream;
+import javax.media.rtp.SendStreamListener;
+import javax.media.rtp.SessionAddress;
 import javax.media.rtp.event.NewSendStreamEvent;
-import javax.media.rtp.event.StreamClosedEvent;
 import javax.media.rtp.event.SendStreamEvent;
+import javax.media.rtp.event.StreamClosedEvent;
 
 import com.dolphinss.HiloCliente;
 
@@ -303,6 +304,9 @@ public class UnicastRtp implements ControllerListener,
 	}
 
 	protected boolean createMyRTPManager() {
+		if(HiloCliente.DEBUG){
+			System.out.println("Inicio el createMyRTPManager...");
+		}
 		PushBufferDataSource pbds = (PushBufferDataSource) ds;
 		PushBufferStream pbss[] = pbds.getStreams();
 
@@ -318,12 +322,25 @@ public class UnicastRtp implements ControllerListener,
 				mgr[i].initialize(localAddr);
 				mgr[i].addTarget(destAddr);
 				mySendStream = mgr[i].createSendStream(ds, i);
-			} catch (Exception e) {
-				myEx(e, "RTP_Stream createMyRTPManager");
-				return false;
+			} catch (UnsupportedFormatException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (UnknownHostException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}catch (InvalidSessionAddressException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
-
+		
+		if(HiloCliente.DEBUG){
+			System.out.println("Terminado el createMyRTPManager!.");
+		}
+		
 		return true;
 	}
 
@@ -337,7 +354,7 @@ public class UnicastRtp implements ControllerListener,
 		} catch (IOException ex) {
 			myEx((Exception) ex, "RTP_Stream startMyStream");
 			return false;
-		}
+		} 
 		return true;
 	}
 
