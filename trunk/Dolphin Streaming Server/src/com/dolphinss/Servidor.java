@@ -69,7 +69,9 @@ public class Servidor {
 	public Servidor(){
 		try {
 			IP_SERVIDOR=InetAddress.getLocalHost().getHostAddress();
-		} catch (UnknownHostException e) {
+//			IP_SERVIDOR="93.156.241.39";
+		} 
+		catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
