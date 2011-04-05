@@ -94,6 +94,8 @@ public class Sdp {
 		
 		buf.append("v=0"+RespuestaRTSP.CRLF);
 		buf.append("o="+Servidor.nombre+RespuestaRTSP.CRLF);
+		buf.append("i=Descripcion de la sesion"+RespuestaRTSP.CRLF);
+		buf.append("e=Marcos Fermin Lobo <uo174203@uniovi.es>"+RespuestaRTSP.CRLF);
 		buf.append("s="+archivo+RespuestaRTSP.CRLF);
 		buf.append("t=0 0"+RespuestaRTSP.CRLF);
 		buf.append("a=charset:ISO-8859-1"+RespuestaRTSP.CRLF);
